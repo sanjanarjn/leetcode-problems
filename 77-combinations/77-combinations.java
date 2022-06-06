@@ -1,30 +1,27 @@
 class Solution {
-    
-    public List<List<Integer>> combine(int n, int k) { 
-        return combine(1, 0, n, k);
+  List<List<Integer>> output = new LinkedList();
+  int n;
+  int k;
+
+  public void backtrack(int first, LinkedList<Integer> curr) {
+    // if the combination is done
+    if (curr.size() == k)
+      output.add(new LinkedList(curr));
+
+    for (int i = first; i < n + 1; ++i) {
+      // add i into the current combination
+      curr.add(i);
+      // use next integers to complete the combination
+      backtrack(i + 1, curr);
+      // backtrack
+      curr.removeLast();
     }
-    
-    private List<List<Integer>> combine(int i, int count, int n, int k) {
-        
-        if(count == k) {
-            List<List<Integer>> output = new ArrayList<>();
-            output.add(new ArrayList<>());
-            return output;
-        }
-        
-        if(i > n)
-            return new ArrayList<>();
-        
-        List<List<Integer>> output = new ArrayList<>();
-        List<List<Integer>> excluding = combine(i + 1, count, n, k);
-        List<List<Integer>> including = combine(i + 1, count + 1, n, k);
-        
-        for(List<Integer> eachIncl : including) {
-            eachIncl.add(i);
-            output.add(eachIncl);
-        }
-        output.addAll(excluding);
-        
-        return output;
-    }
+  }
+
+  public List<List<Integer>> combine(int n, int k) {
+    this.n = n;
+    this.k = k;
+    backtrack(1, new LinkedList<Integer>());
+    return output;
+  }
 }
