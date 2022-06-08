@@ -1,57 +1,34 @@
 class Solution {
-    
-    private int n;
-    private boolean[] visited;
-    private Map<Integer, List<Integer>> neighbours;
-    
     public boolean leadsToDestination(int n, int[][] edges, int source, int destination) {
-        
-        if(n == 50)
-            return true;
-        
-        this.n = n;
-        this.visited = new boolean[n];
-        this.neighbours = new HashMap<>();
-        
-        for(int i = 0; i < edges.length; i++) {
-            int start = edges[i][0];
-            int end = edges[i][1];
-            
-            if(end == source)
-                return false;
-            
-            List<Integer> neighbourList = neighbours.getOrDefault(start, new ArrayList<>());
-            neighbourList.add(end);
-            neighbours.put(start, neighbourList);
+         
+        Map<Integer, Set<Integer>> adjList = new HashMap<>();
+        for (int i = 0; i < edges.length; ++i) {
+            adjList.putIfAbsent(edges[i][0], new HashSet<Integer>());
+            adjList.get(edges[i][0]).add(edges[i][1]);
         }
-        return checkPath(source, destination);
+        
+        if(adjList.containsKey(destination))
+            return false;
+        
+        return doDfs(n, edges, source, destination, new HashSet<>(), adjList);
     }
     
-    private boolean checkPath(int node, int destination) {
-        
-        List<Integer> neighbourList = neighbours.getOrDefault(node, Collections.emptyList());
-        if(node == destination) {
-            for(int neighbour: neighbourList) {
-                if(neighbour == node || visited[neighbour])
-                    return false;
-            }
-        }
-             
-        
-        if(visited[node]) 
+    boolean doDfs(int n, int[][] edges, int node, int destination, Set<Integer> seenSet, Map<Integer, Set<Integer>> adjList){
+        if(node == destination)
+            return true;
+        // We wanna traverse paths, node nodes, so we may revisit a node
+        seenSet.add(node);
+        if(adjList.get(node) == null)
             return false;
-        
-        if(node != destination && neighbourList.size() == 0)
-            return false;
-        
-        visited[node] = true;
-        
-        for(int neighbour: neighbourList) {
-            boolean checkPath = checkPath(neighbour, destination);
-            if(!checkPath)
+        for(Integer target : adjList.get(node)){
+            if(seenSet.contains(target))
+                return false; // loop
+            if(!doDfs(n, edges, target, destination, seenSet, adjList))
                 return false;
         }
-        visited[node] = false;
+        // done visiting the node for the iteration, we may return to this node
+            // Currently it is out of the stack and no loop will happen
+        seenSet.remove(node);
         return true;
     }
 }
