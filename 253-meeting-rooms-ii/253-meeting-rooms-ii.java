@@ -5,27 +5,16 @@ class Solution {
         if(n <= 1)
             return n;
         
-        int[] start = new int[n];
-        int[] end = new int[n];
-        for(int i = 0; i < n; i++) {
-            start[i] = intervals[i][0];
-            end[i] = intervals[i][1];
-        }
-        Arrays.sort(start);
-        Arrays.sort(end);
+        Arrays.sort(intervals, (int[] a, int[] b) -> Integer.compare(a[0], b[0]));
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        minHeap.add(intervals[0][1]);
         
-        int startPointer = 0, endPointer = 0;
-        int rooms = 0;
-        
-        while(startPointer < n) {
-            if(start[startPointer] < end[endPointer]) {
-                rooms++;
+        for(int i = 1; i < intervals.length; i++) {
+            if(intervals[i][0] >= minHeap.peek()) {
+                minHeap.remove();
             }
-            else {
-                endPointer++;
-            }
-            startPointer++;
+            minHeap.add(intervals[i][1]);
         }
-        return rooms;
+        return minHeap.size();
     }
 }
