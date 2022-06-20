@@ -39,6 +39,7 @@ class Solution {
             }
         }
         
+        
         while(p1 != null) {
             ListNode node = new ListNode(p1.val);
             if(merged == null) {
