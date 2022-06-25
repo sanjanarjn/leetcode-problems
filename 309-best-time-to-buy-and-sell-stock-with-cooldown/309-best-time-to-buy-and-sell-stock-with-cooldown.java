@@ -1,6 +1,7 @@
 class Solution {
 
-    Map<String, Integer> dp;
+    int[] buyingProfits;
+    int[] notBuyingProfits;
 
     int[] prices;
     int n;
@@ -10,30 +11,38 @@ class Solution {
         this.n = prices.length;
         this.prices = prices;
 
-        this.dp = new HashMap<>();
+        this.buyingProfits = new int[n];
+        this.notBuyingProfits = new int[n];
 
+        for (int i = 0; i < n; i++) {
+            buyingProfits[i] = Integer.MIN_VALUE;
+            notBuyingProfits[i] = Integer.MIN_VALUE;
+        }
         return maxProfit(0, true);
     }
 
     private int maxProfit(int i, boolean buying) {
 
-        if(i >= prices.length)
+        if (i >= prices.length) {
             return 0;
+        }
+        if (buying) {
+            if (buyingProfits[i] > Integer.MIN_VALUE)
+                return buyingProfits[i];
 
-        String dpKey = i + "_" + buying;
-        if(dp.containsKey(dpKey))
-            return dp.get(dpKey);
-
-        int coolDownProfit = maxProfit(i + 1, buying);
-        if(buying) {
             int buyingProfit = maxProfit(i + 1, !buying) - prices[i];
-            dp.put(dpKey, Math.max(buyingProfit, coolDownProfit));
+            int coolDownProfit = maxProfit(i + 1, buying);
+            buyingProfits[i] = Math.max(buyingProfit, coolDownProfit);
+            return buyingProfits[i];
         }
-
         else {
+            if (notBuyingProfits[i] > Integer.MIN_VALUE)
+                return notBuyingProfits[i];
+
             int sellingProfit = maxProfit(i + 2, !buying) + prices[i];
-            dp.put(dpKey, Math.max(sellingProfit, coolDownProfit));
+            int coolDownProfit = maxProfit(i + 1, buying);
+            notBuyingProfits[i] = Math.max(sellingProfit, coolDownProfit);
+            return notBuyingProfits[i];
         }
-        return dp.get(dpKey);
     }
 }
