@@ -1,48 +1,24 @@
 class Solution {
 
-    int[] buyingProfits;
-    int[] notBuyingProfits;
 
-    int[] prices;
-    int n;
 
     public int maxProfit(int[] prices) {
 
-        this.n = prices.length;
-        this.prices = prices;
-
-        this.buyingProfits = new int[n];
-        this.notBuyingProfits = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            buyingProfits[i] = Integer.MIN_VALUE;
-            notBuyingProfits[i] = Integer.MIN_VALUE;
+        int n = prices.length;
+        
+        int[] buyingProfits = new int[n];
+        int[] sellingProfits = new int[n];
+        int[] coolDownProfits = new int[n];
+        
+        buyingProfits[0] = -prices[0];
+        for(int i = 1; i < n; i++) {
+            int sellingProfit_2DaysBack = i > 1 ? sellingProfits[i - 2] : 0;
+            buyingProfits[i] = Math.max(buyingProfits[i - 1], coolDownProfits[i - 1] - prices[i]);
+            sellingProfits[i] = Math.max(sellingProfits[i - 1], buyingProfits[i - 1] + prices[i]);
+            coolDownProfits[i] = Math.max(coolDownProfits[i - 1], sellingProfits[i - 1]);
         }
-        return maxProfit(0, true);
+        return sellingProfits[n - 1];
     }
 
-    private int maxProfit(int i, boolean buying) {
-
-        if (i >= prices.length) {
-            return 0;
-        }
-        if (buying) {
-            if (buyingProfits[i] > Integer.MIN_VALUE)
-                return buyingProfits[i];
-
-            int buyingProfit = maxProfit(i + 1, !buying) - prices[i];
-            int coolDownProfit = maxProfit(i + 1, buying);
-            buyingProfits[i] = Math.max(buyingProfit, coolDownProfit);
-            return buyingProfits[i];
-        }
-        else {
-            if (notBuyingProfits[i] > Integer.MIN_VALUE)
-                return notBuyingProfits[i];
-
-            int sellingProfit = maxProfit(i + 2, !buying) + prices[i];
-            int coolDownProfit = maxProfit(i + 1, buying);
-            notBuyingProfits[i] = Math.max(sellingProfit, coolDownProfit);
-            return notBuyingProfits[i];
-        }
-    }
+    
 }
