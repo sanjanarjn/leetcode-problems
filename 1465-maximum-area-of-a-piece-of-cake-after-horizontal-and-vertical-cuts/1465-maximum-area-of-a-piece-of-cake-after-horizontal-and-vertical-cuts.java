@@ -12,12 +12,12 @@ class Solution {
         
         long maxHeight = Math.max(horizontalCuts[0], h - horizontalCuts[m - 1]);
         for(int i = 1; i < m; i++) {
-            maxHeight = Math.max(maxHeight, horizontalCuts[i] - horizontalCuts[i - 1]);
+            maxHeight = (Math.max(maxHeight, horizontalCuts[i] - horizontalCuts[i - 1])) % mod;
         }
         
         long maxWidth = Math.max(verticalCuts[0], w - verticalCuts[n - 1]);
         for(int i = 1; i < n; i++) {
-            maxWidth = Math.max(maxWidth, verticalCuts[i] - verticalCuts[i - 1]);
+            maxWidth = (Math.max(maxWidth, verticalCuts[i] - verticalCuts[i - 1])) % mod;
         }
         
         return (int) ((maxHeight * maxWidth) % mod);
