@@ -7,12 +7,15 @@ class Solution {
         if(n==3)
             return 2;
         int x;
-        x=n/3;
-        if(n%3==0)
-            return (int)Math.pow(3,x);
-        if(n%3==1)
-            return (int)Math.pow(3,x-1)*4;
-        return (int)Math.pow(3,x)*2;
+        x = n/3;
+        
+        if(n % 3 == 0)
+            return (int) Math.pow(3, x);
+        
+        if(n % 3 == 1)
+            return (int) Math.pow(3, x - 1) * 4;
+        
+        return (int) Math.pow(3 , x) * 2;
     }
 }
 
