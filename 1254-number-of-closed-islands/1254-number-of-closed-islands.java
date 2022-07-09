@@ -18,27 +18,30 @@ class Solution {
         for(int i = 0; i < m; i++) {
             for(int j = 0; j < n; j++) {
                 if(grid[i][j] == 0) {
-                    closedCount += dfs(i, j) ? 1 : 0;
+                    closedCount += dfs(i, j);
                 }
             }
         }
         return closedCount;
     }
     
-    private boolean dfs(int i, int j) {
+    private int dfs(int i, int j) {
         
         if(i < 0 || i >= m || j < 0 || j >= n)
-            return false;
+            return 0;
         
         if(grid[i][j] == 1)
-            return true;
+            return 1;
     
         
         grid[i][j] = 1;
-        boolean closed = true;
+        boolean isClosed = true;
         for(int[] direction : directions) {
-            closed = dfs(i + direction[0], j + direction[1]) && closed;
+            int count = dfs(i + direction[0], j + direction[1]);
+            if(count == 0) {
+                isClosed = false;
+            }
         }
-        return closed;
+        return isClosed ? 1 : 0;
     }
 }
