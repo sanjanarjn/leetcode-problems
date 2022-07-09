@@ -1,18 +1,23 @@
 class Solution {
+    
     public int maxResult(int[] nums, int k) {
+        
         int n = nums.length;
-        int[] score = new int[n];
-        score[0] = nums[0];
-        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a, b) -> b[0] - a[0]);
-        priorityQueue.add(new int[] { nums[0], 0 });
-        for (int i = 1; i < n; i++) {
-            // pop the old index
-            while (priorityQueue.peek()[1] < i - k) {
-                priorityQueue.remove();
+        
+        Deque<int[]> queue = new LinkedList<>();
+        int score = nums[n - 1];
+        queue.add(new int[]{n - 1, nums[n - 1]});
+        
+        for(int i = n - 2; i >= 0; i--) {
+            while(!queue.isEmpty() && queue.peekFirst()[0] > i + k) {
+                queue.pollFirst();
             }
-            score[i] = nums[i] + score[priorityQueue.peek()[1]];
-            priorityQueue.add(new int[] { score[i], i });
+            score = nums[i] + queue.peekFirst()[1];
+            while(!queue.isEmpty() && queue.peekLast()[1] <= score) {
+                queue.pollLast();
+            }
+            queue.offerLast(new int[]{i, score});
         }
-        return score[n - 1];
+        return score;
     }
 }
