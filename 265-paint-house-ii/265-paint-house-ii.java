@@ -1,40 +1,46 @@
 class Solution {
     public int minCostII(int[][] costs) {
-
         int m = costs.length;
         int n = costs[0].length;
 
-        int dp[][] = new int[m][n];
-
-        int prevMinI = -1;
-        int prevSecondMinI = -1;
-        for(int house = m - 1; house >= 0; house--) {
-
-            int currMinI = -1;
-            int currSecondMinI = -1;
-
-            for(int paint = 0; paint < n; paint++) {
-                if(house == m - 1) {
-                    dp[house][paint] = costs[house][paint];
+        int minI = -1;
+        int secondMinI = -1;
+        
+        int prevMin = 0;
+        int prevSecondMin = 0;
+        
+        int[] dp = new int[n];
+        for(int i = m - 1; i >= 0; i--) {
+            
+            int nextMinI = -1;
+            int nextSecondMinI = -1;
+            
+            for(int j = 0; j < n; j++) {
+                if(i == m - 1) {
+                    dp[j] = costs[i][j];
                 }
                 else {
-                    dp[house][paint] = costs[house][paint] + (paint == prevMinI ? dp[house + 1][prevSecondMinI] : dp[house + 1][prevMinI]);
+                    dp[j] = costs[i][j] + (j == minI ? prevSecondMin : prevMin);
                 }
-
-                int cost = dp[house][paint];
-                int min = currMinI >= 0 ? dp[house][currMinI] : Integer.MAX_VALUE;
-                int secondMin = currSecondMinI >= 0 ? dp[house][currSecondMinI] : Integer.MAX_VALUE;
-                if(cost < min) {
-                    currSecondMinI = currMinI;
-                    currMinI = paint;
+                
+                int currCost = dp[j];
+                int min = nextMinI >= 0 ? dp[nextMinI] : Integer.MAX_VALUE;
+                int secondMin = nextSecondMinI >= 0 ? dp[nextSecondMinI] : Integer.MAX_VALUE;
+                
+                if(currCost < min) {
+                    nextSecondMinI = nextMinI;
+                    nextMinI = j;
                 }
-                if(cost >= min && cost < secondMin && paint != currMinI) {
-                    currSecondMinI = paint;
+                else if(currCost >= min && currCost < secondMin) {
+                    nextSecondMinI = j;
                 }
             }
-            prevMinI = currMinI;
-            prevSecondMinI = currSecondMinI;
-        }
-        return dp[0][prevMinI];
+            minI = nextMinI;
+            secondMinI = nextSecondMinI;
+            
+            prevMin = dp[nextMinI];
+            prevSecondMin = dp[nextSecondMinI];
+         }
+        return prevMin;
     }
 }
