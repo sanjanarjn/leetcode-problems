@@ -1,22 +1,37 @@
 class Solution {
-    
+
+    int n;
+    int[] nums;
+    int[][] dp;
     
     public int lengthOfLIS(int[] nums) {
-            
-        int n = nums.length;
-        int[] dp = new int[n];
         
-        int lisLen = 1;
-        dp[n - 1] = 1;
-        for(int i = n - 2; i >= 0; i--) {
-            dp[i] = 1;
-            for (int j = i + 1; j < n; j++) {
-                if(nums[i] < nums[j] && dp[i] < 1 + dp[j]) {
-                    dp[i] = 1 + dp[j];
-                }     
-            }
-            lisLen = Math.max(lisLen, dp[i]);
+        this.nums = nums;
+        this.n = nums.length;
+        this.dp = new int[n][n + 1];
+        for(int[] row : dp) {
+            Arrays.fill(row, -1);
         }
-        return lisLen;
+        
+        return lis(0, -1);
+    }
+    
+    private int lis(int i, int j) {
+        
+        if(i == n)
+            return 0;
+        
+        if(dp[i][j + 1] != -1)
+            return dp[i][j + 1];
+        
+        int lastElem = j == -1 ? Integer.MIN_VALUE : nums[j];
+        int elem = nums[i];
+        int lisLenIncl = Integer.MIN_VALUE;
+        if(elem > lastElem) {
+            lisLenIncl = 1 + lis(i + 1, i);
+        }
+        int lisLenExcl = lis(i + 1, j);
+        dp[i][j + 1] = Math.max(lisLenIncl, lisLenExcl);
+        return dp[i][j + 1];
     }
 }
